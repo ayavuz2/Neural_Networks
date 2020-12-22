@@ -1,6 +1,8 @@
 import tensorflow as td
 from tensorflow import keras
 import numpy as np
+np.set_printoptions(suppress=True)
+
 
 data = keras.datasets.imdb
 
@@ -45,3 +47,10 @@ fitModel = model.fit(x_train, y_train, epochs=40, batch_size=512, validation_dat
 results = model.evaluate(test_data, test_labels)
 
 print(results) # result: (loss, accuracy)
+
+test_review = test_data[0]
+predict = model.predict([test_review])
+print("Review: ")
+print(decode_review(test_review))
+print("Prediction: " + str(predict[0]))
+print("Actual: " + str(test_labels[0]))
