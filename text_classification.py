@@ -1,12 +1,12 @@
 import tensorflow as td
 from tensorflow import keras
 import numpy as np
-np.set_printoptions(suppress=True)
+np.set_printoptions(suppress=True) # printing the prediction score more human readable
 
 
 data = keras.datasets.imdb
 
-(train_data, train_labels), (test_data, test_labels) = data.load_data(num_words=10000) # number of different words (sorted by their occurrences)
+(train_data, train_labels), (test_data, test_labels) = data.load_data(num_words=88000) # number of different words (sorted by their occurrences)
 
 word_index = data.get_word_index()
 
@@ -27,7 +27,7 @@ def decode_review(text):
 
 # model
 model = keras.Sequential()
-model.add(keras.layers.Embedding(10000, 16)) # vectorization process(16D)
+model.add(keras.layers.Embedding(88000, 16)) # vectorization process(16D)
 model.add(keras.layers.GlobalAveragePooling1D()) # scaling down those 16D vektors to 1D
 model.add(keras.layers.Dense(16, activation="relu"))
 model.add(keras.layers.Dense(1, activation="sigmoid")) # output numbers will be between 0 & 1
@@ -48,9 +48,13 @@ results = model.evaluate(test_data, test_labels)
 
 print(results) # result: (loss, accuracy)
 
+model.save("model.h5")
+
+"""
 test_review = test_data[0]
 predict = model.predict([test_review])
 print("Review: ")
 print(decode_review(test_review))
 print("Prediction: " + str(predict[0]))
 print("Actual: " + str(test_labels[0]))
+"""
