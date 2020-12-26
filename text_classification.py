@@ -25,6 +25,7 @@ test_data = keras.preprocessing.sequence.pad_sequences(test_data, value=word_ind
 def decode_review(text):
 	return " ".join([reverse_word_index.get(i, "?") for i in text]) # "?": default key
 
+"""
 # model
 model = keras.Sequential()
 model.add(keras.layers.Embedding(88000, 16)) # vectorization process(16D)
@@ -49,6 +50,32 @@ results = model.evaluate(test_data, test_labels)
 print(results) # result: (loss, accuracy)
 
 model.save("model.h5")
+"""
+
+def review_encode(s):
+	encoded = [1] # for <START>
+
+	for word in s:
+		if word in word_index:
+			encoded.append(word_index[word.lower()])
+		else:
+			encoded.append(2) # unknown tag
+
+	return encoded
+
+model = keras.models.load_model("model.h5")
+
+with open("review.txt", encoding="utf-8") as f:
+	for line in f.readlines():
+		nline = line.replace(",", "").replace(".", "").replace("(", "").replace(")", "").replace(":", "").replace("\"", "").strip().split(" ")
+		encode = review_encode(nline)
+		encode = keras.preprocessing.sequence.pad_sequences([encode], value=word_index["<PAD>"], padding="post", maxlen=250)
+		predict = model.predict(encode)
+		print(line)
+		print(encode)
+		print(predict[0])
+		print("\n-------------------\n")
+
 
 """
 test_review = test_data[0]
